@@ -1,5 +1,5 @@
 /* ALVAMITRA — mini-demo previews (live, interactive teasers for each tool) */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { IconCheck } from '../icons';
 
@@ -235,35 +235,85 @@ export const SubnetDemo = () => {
 };
 
 /* 8 — Port Forwarding Test -------------------------------------------- */
+// Demo NYATA: panggil API yang sama dengan tool lengkap. Server Vercel ada di
+// luar jaringan lokal, jadi hasil benar-benar mencerminkan akses dari internet.
+const PORT_API = 'https://port-forwarding-test-jyhx.vercel.app/api/check-port';
+const IP_APIS = ['https://api.ipify.org?format=json', 'https://api64.ipify.org?format=json'];
+const PORT_SVC: Record<number, string> = { 554: 'RTSP', 80: 'HTTP', 443: 'HTTPS', 37777: 'Dahua', 8000: 'Hikvision', 34567: 'XMEye' };
+const inputStyle = { padding: '8px 10px', border: '1px solid var(--border-strong)', borderRadius: 8, fontFamily: 'ui-monospace, monospace', fontWeight: 700, fontSize: 13, color: 'var(--ink)' } as const;
+
 export const PortTestDemo = () => {
+  const [host, setHost] = useState('');
+  const [ipState, setIpState] = useState<'loading' | 'ok' | 'failed'>('loading');
   const [port, setPort] = useState<string | number>(554);
-  const [state, setState] = useState<'idle' | 'checking' | 'done'>('idle');
-  const open = [80, 443, 554, 8000, 8200, 37777, 34567, 8899].includes(+port);
-  const run = () => { setState('checking'); setTimeout(() => setState('done'), 1000); };
-  const common: Record<number, string> = { 554: 'RTSP', 80: 'HTTP', 443: 'HTTPS', 37777: 'Dahua', 8000: 'Hikvision' };
+  const [state, setState] = useState<'idle' | 'checking' | 'open' | 'closed' | 'error'>('idle');
+
+  // Auto-deteksi IP publik (use case dominan: cek port forwarding IP sendiri).
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      for (const url of IP_APIS) {
+        try {
+          const r = await fetch(url, { signal: AbortSignal.timeout(5000) });
+          if (!r.ok) continue;
+          const d = await r.json();
+          if (d?.ip && alive) { setHost(d.ip); setIpState('ok'); return; }
+        } catch { /* service ini gagal — coba berikutnya */ }
+      }
+      if (alive) setIpState('failed');
+    })();
+    return () => { alive = false; };
+  }, []);
+
+  const run = async () => {
+    const p = +port;
+    if (!host.trim() || !p) return;
+    setState('checking');
+    try {
+      const r = await fetch(PORT_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ host: host.trim(), port: p, protocol: 'tcp' }),
+        signal: AbortSignal.timeout(12000),
+      });
+      const d = await r.json();
+      if (!r.ok) { setState('error'); return; }
+      setState(d.isOpen ? 'open' : 'closed');
+    } catch { setState('error'); }
+  };
+
+  const reset = () => setState('idle');
   return (
     <div className="demo">
       <div className="demo-row" style={{ alignItems: 'center' }}>
-        <span className="demo-label">Port number {common[+port] ? `· ${common[+port]}` : ''}</span>
-        <input type="number" value={port} onChange={(e) => { setPort(e.target.value); setState('idle'); }}
-          style={{ width: 92, padding: '8px 10px', border: '1px solid var(--border-strong)', borderRadius: 8, fontFamily: 'ui-monospace, monospace', fontWeight: 700, fontSize: 14, color: 'var(--ink)', textAlign: 'center' }} />
+        <span className="demo-label">IP / domain</span>
+        <input type="text" value={host} onChange={(e) => { setHost(e.target.value); reset(); }}
+          placeholder={ipState === 'loading' ? 'mendeteksi IP…' : '203.0.113.1'}
+          style={{ ...inputStyle, width: 150 }} />
       </div>
-      <button onClick={run} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 14, padding: '11px' }}>
-        {state === 'checking' ? 'Mengecek…' : 'Cek port'}
+      <div className="demo-row" style={{ alignItems: 'center', marginTop: 10 }}>
+        <span className="demo-label">Port {PORT_SVC[+port] ? `· ${PORT_SVC[+port]}` : ''}</span>
+        <input type="number" value={port} onChange={(e) => { setPort(e.target.value); reset(); }}
+          style={{ ...inputStyle, width: 92, textAlign: 'center' }} />
+      </div>
+      <button onClick={run} disabled={!host.trim() || state === 'checking'} className="btn btn-primary"
+        style={{ width: '100%', justifyContent: 'center', marginTop: 14, padding: '11px', opacity: !host.trim() ? 0.6 : 1 }}>
+        {state === 'checking' ? 'Mengecek…' : 'Cek port sungguhan'}
       </button>
       <div style={{ marginTop: 14, minHeight: 44, display: 'flex', alignItems: 'center', gap: 11 }}>
-        {state === 'idle' && <span style={{ fontSize: 12.5, color: 'var(--muted)' }}>Tekan “Cek port” untuk simulasi hasil.</span>}
+        {state === 'idle' && <span style={{ fontSize: 12.5, color: 'var(--muted)' }}>Cek dari server eksternal — hasil nyata, bukan simulasi.</span>}
         {state === 'checking' && (
           <span style={{ display: 'inline-block', width: 18, height: 18, border: '3px solid var(--border-strong)', borderTopColor: 'var(--blue)', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
         )}
-        {state === 'done' && (
+        {(state === 'open' || state === 'closed') && (
           <>
-            <span style={{ width: 11, height: 11, borderRadius: '50%', background: open ? 'var(--ok)' : 'var(--warm)' }} />
-            <span style={{ fontWeight: 700, color: open ? 'var(--ok)' : 'var(--warm)', fontFamily: 'var(--font-head)' }}>
-              Port {port} {open ? 'TERBUKA' : 'TERTUTUP'}
+            <span style={{ width: 11, height: 11, borderRadius: '50%', background: state === 'open' ? 'var(--ok)' : 'var(--warm)' }} />
+            <span style={{ fontWeight: 700, color: state === 'open' ? 'var(--ok)' : 'var(--warm)', fontFamily: 'var(--font-head)' }}>
+              Port {port} {state === 'open' ? 'TERBUKA' : 'TERTUTUP'}
             </span>
           </>
         )}
+        {state === 'error' && <span style={{ fontSize: 12.5, color: 'var(--warm)', fontWeight: 600 }}>Gagal cek — coba lagi.</span>}
       </div>
     </div>
   );
