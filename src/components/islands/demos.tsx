@@ -94,8 +94,10 @@ export const ViewingAngleDemo = () => {
   const sensorW = 4.8; // 1/3" approx
   const aov = 2 * Math.atan(sensorW / (2 * f)) * 180 / Math.PI;
   const widthAt10 = 2 * 10 * Math.tan((aov / 2) * Math.PI / 180);
-  // fan geometry
-  const cx = 20, cy = 48, L = 188, half = (aov / 2) * Math.PI / 180;
+  // Geometri kipas — clamp panjang sinar agar selalu muat di viewBox
+  // (sudut lebar -> sinar pendek; sudut sempit -> sinar panjang).
+  const cx = 20, cy = 48, half = (aov / 2) * Math.PI / 180;
+  const L = Math.min(192 / Math.cos(half), 42 / Math.sin(half));
   const tx = cx + L * Math.cos(half), ty = cy - L * Math.sin(half);
   const bx = cx + L * Math.cos(half), by = cy + L * Math.sin(half);
   return (
