@@ -73,4 +73,9 @@ import { GROUPS } from '../data/content';
   } else {
     els.forEach(show);
   }
+  // Hentikan animasi SMIL di SVG hero untuk user yang minta reduced-motion
+  // (CSS tidak bisa mematikan animasi SMIL).
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('svg').forEach((s) => (s as SVGSVGElement).pauseAnimations?.());
+  }
 </script>

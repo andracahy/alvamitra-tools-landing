@@ -3,8 +3,14 @@ import '../styles/global.css';
 
 interface Props {
   title?: string;
+  description?: string;
 }
-const { title = 'ALVAMITRA — Tools untuk Perencanaan CCTV' } = Astro.props;
+const {
+  title = 'ALVAMITRA — Tools untuk Perencanaan CCTV',
+  description = 'Tools gratis ALVAMITRA untuk perencanaan CCTV: hitung coverage, bandwidth, storage, PoE budget, subnet, sampai tes port — hasil real-time, tanpa login.',
+} = Astro.props;
+const ogImage = new URL('/assets/alvamitra-logo.png', Astro.site).href;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
 ---
 
 <!DOCTYPE html>
@@ -13,6 +19,17 @@ const { title = 'ALVAMITRA — Tools untuk Perencanaan CCTV' } = Astro.props;
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="canonical" href={canonical} />
+  <link rel="icon" type="image/png" href="/assets/alvamitra-logo.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link

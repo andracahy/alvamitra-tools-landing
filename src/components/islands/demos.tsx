@@ -12,21 +12,21 @@ const Field = ({ label, children }: { label: string; children: ReactNode }) => (
 );
 
 interface SegOpt<T> { v: T; l: string; }
-function Seg<T extends string | number>({ opts, val, set }: { opts: SegOpt<T>[]; val: T; set: (v: T) => void }) {
+function Seg<T extends string | number>({ opts, val, set, label }: { opts: SegOpt<T>[]; val: T; set: (v: T) => void; label?: string }) {
   return (
-    <div className="seg">
+    <div className="seg" role="group" aria-label={label}>
       {opts.map((o) => (
-        <button key={String(o.v)} className={val === o.v ? 'on' : ''} onClick={() => set(o.v)}>{o.l}</button>
+        <button key={String(o.v)} className={val === o.v ? 'on' : ''} aria-pressed={val === o.v} onClick={() => set(o.v)}>{o.l}</button>
       ))}
     </div>
   );
 }
 
-const Stepper = ({ val, set, min = 1, max = 99 }: { val: number; set: (v: number) => void; min?: number; max?: number }) => (
-  <div className="stepper">
-    <button onClick={() => set(Math.max(min, val - 1))}>−</button>
-    <span className="n">{val}</span>
-    <button onClick={() => set(Math.min(max, val + 1))}>+</button>
+const Stepper = ({ val, set, min = 1, max = 99, label }: { val: number; set: (v: number) => void; min?: number; max?: number; label?: string }) => (
+  <div className="stepper" role="group" aria-label={label}>
+    <button aria-label={`Kurangi${label ? ' ' + label : ''}`} onClick={() => set(Math.max(min, val - 1))}>−</button>
+    <span className="n" aria-live="polite">{val}</span>
+    <button aria-label={`Tambah${label ? ' ' + label : ''}`} onClick={() => set(Math.min(max, val + 1))}>+</button>
   </div>
 );
 
@@ -60,13 +60,13 @@ export const CctvCalcDemo = () => {
   return (
     <div className="demo">
       <Field label="Focal length">
-        <Seg val={focal} set={setFocal} opts={[{ v: 2.8, l: '2.8' }, { v: 3.6, l: '3.6' }, { v: 6, l: '6' }, { v: 12, l: '12mm' }]} />
+        <Seg label="Focal length" val={focal} set={setFocal} opts={[{ v: 2.8, l: '2.8' }, { v: 3.6, l: '3.6' }, { v: 6, l: '6' }, { v: 12, l: '12mm' }]} />
       </Field>
       <Field label="Resolusi">
-        <Seg val={mp} set={setMp} opts={[{ v: 2, l: '2MP' }, { v: 4, l: '4MP' }, { v: 8, l: '8MP' }]} />
+        <Seg label="Resolusi" val={mp} set={setMp} opts={[{ v: 2, l: '2MP' }, { v: 4, l: '4MP' }, { v: 8, l: '8MP' }]} />
       </Field>
       <Field label="Jarak ke objek"><span className="demo-val">{d} m</span></Field>
-      <input type="range" min="1" max="20" step="1" value={d} onChange={(e) => setD(+e.target.value)} />
+      <input type="range" aria-label="Jarak ke objek (meter)" min="1" max="20" step="1" value={d} onChange={(e) => setD(+e.target.value)} />
       <div className="demo-row" style={{ marginTop: 14, alignItems: 'baseline' }}>
         <span className="demo-out" style={{ fontSize: 28 }}>{density.toFixed(0)} <span style={{ fontSize: 14, fontWeight: 700 }}>px/m</span></span>
         <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)' }}>{top}</span>
@@ -101,7 +101,7 @@ export const ViewingAngleDemo = () => {
   return (
     <div className="demo">
       <Field label="Focal length"><span className="demo-val">{f.toFixed(1)} mm</span></Field>
-      <input type="range" min="2.8" max="12" step="0.2" value={f} onChange={(e) => setF(+e.target.value)} />
+      <input type="range" aria-label="Focal length (mm)" min="2.8" max="12" step="0.2" value={f} onChange={(e) => setF(+e.target.value)} />
       <svg viewBox="0 0 230 96" style={{ width: '100%', height: 'auto', marginTop: 12 }}>
         <path d={`M${cx} ${cy} L${tx} ${ty} A${L} ${L} 0 0 1 ${bx} ${by} Z`} fill="color-mix(in srgb, var(--blue) 16%, transparent)" stroke="var(--blue)" strokeOpacity="0.4" strokeWidth="1" />
         <line x1={cx} y1={cy} x2={tx} y2={ty} stroke="var(--blue)" strokeWidth="1.4" />
@@ -124,9 +124,9 @@ export const BandwidthDemo = () => {
   const total = cams * per;
   return (
     <div className="demo">
-      <Field label="Jumlah kamera"><Stepper val={cams} set={setCams} min={1} max={32} /></Field>
+      <Field label="Jumlah kamera"><Stepper label="jumlah kamera" val={cams} set={setCams} min={1} max={32} /></Field>
       <Field label="Resolusi">
-        <Seg val={res} set={setRes} opts={[{ v: 2, l: '2MP' }, { v: 4, l: '4MP' }, { v: 8, l: '8MP' }]} />
+        <Seg label="Resolusi" val={res} set={setRes} opts={[{ v: 2, l: '2MP' }, { v: 4, l: '4MP' }, { v: 8, l: '8MP' }]} />
       </Field>
       <Result sub={`Mbps total · H.265 · ${per} Mbps/kamera`}>{total} <span style={{ fontSize: 16, fontWeight: 700 }}>Mbps</span></Result>
       <Bar pct={(total / 200) * 100} />
@@ -144,10 +144,10 @@ export const StorageDemo = () => {
   return (
     <div className="demo">
       <Field label="Jumlah kamera">
-        <Seg val={cams} set={setCams} opts={[{ v: 4, l: '4' }, { v: 8, l: '8' }, { v: 16, l: '16' }]} />
+        <Seg label="Jumlah kamera" val={cams} set={setCams} opts={[{ v: 4, l: '4' }, { v: 8, l: '8' }, { v: 16, l: '16' }]} />
       </Field>
       <Field label="Retensi"><span className="demo-val">{days} hari</span></Field>
-      <input type="range" min="3" max="90" step="1" value={days} onChange={(e) => setDays(+e.target.value)} />
+      <input type="range" aria-label="Retensi (hari)" min="3" max="90" step="1" value={days} onChange={(e) => setDays(+e.target.value)} />
       <Result sub="storage dibutuhkan">{tb.toFixed(1)} <span style={{ fontSize: 16, fontWeight: 700 }}>TB</span></Result>
       <Bar pct={(tb / 24) * 100} />
       <div style={{ fontSize: 11.5, color: 'var(--muted)', marginTop: 7 }}>Asumsi 8 Mbps/kamera, perekaman 24 jam</div>
@@ -166,7 +166,7 @@ export const WirelessDemo = () => {
   return (
     <div className="demo">
       <Field label="Jarak link"><span className="demo-val">{d.toFixed(1)} km</span></Field>
-      <input type="range" min="0.1" max="5" step="0.1" value={d} onChange={(e) => setD(+e.target.value)} />
+      <input type="range" aria-label="Jarak link (km)" min="0.1" max="5" step="0.1" value={d} onChange={(e) => setD(+e.target.value)} />
       <div className="demo-row" style={{ marginTop: 16 }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: 5, height: 38 }}>
           {[1, 2, 3, 4].map((b) => (
@@ -194,9 +194,9 @@ export const PoeDemo = () => {
   return (
     <div className="demo">
       <Field label="PoE budget switch">
-        <Seg val={budget} set={setBudget} opts={[{ v: 65, l: '65W' }, { v: 130, l: '130W' }, { v: 250, l: '250W' }]} />
+        <Seg label="PoE budget switch" val={budget} set={setBudget} opts={[{ v: 65, l: '65W' }, { v: 130, l: '130W' }, { v: 250, l: '250W' }]} />
       </Field>
-      <Field label="Jumlah kamera"><Stepper val={cams} set={setCams} min={1} max={48} /></Field>
+      <Field label="Jumlah kamera"><Stepper label="jumlah kamera" val={cams} set={setCams} min={1} max={48} /></Field>
       <div className="demo-row" style={{ marginTop: 14 }}>
         <span className="demo-out" style={{ fontSize: 24, color: col }}>{used.toFixed(0)} W</span>
         <span style={{ fontSize: 13, color: 'var(--muted)' }}>dari {budget} W ({per} W/kamera)</span>
@@ -220,7 +220,7 @@ export const SubnetDemo = () => {
   return (
     <div className="demo">
       <Field label="Subnet prefix"><span className="demo-val">/{cidr}</span></Field>
-      <input type="range" min="22" max="30" step="1" value={cidr} onChange={(e) => setCidr(+e.target.value)} />
+      <input type="range" aria-label="Subnet prefix (CIDR)" min="22" max="30" step="1" value={cidr} onChange={(e) => setCidr(+e.target.value)} />
       <Result sub="host yang dapat dipakai">{hosts.toLocaleString('id-ID')}</Result>
       <div className="demo-row" style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--border)' }}>
         <span className="demo-label">Subnet mask</span>
@@ -287,13 +287,13 @@ export const PortTestDemo = () => {
     <div className="demo">
       <div className="demo-row" style={{ alignItems: 'center' }}>
         <span className="demo-label">IP / domain</span>
-        <input type="text" value={host} onChange={(e) => { setHost(e.target.value); reset(); }}
+        <input type="text" aria-label="IP atau domain target" value={host} onChange={(e) => { setHost(e.target.value); reset(); }}
           placeholder={ipState === 'loading' ? 'mendeteksi IP…' : '203.0.113.1'}
           style={{ ...inputStyle, width: 150 }} />
       </div>
       <div className="demo-row" style={{ alignItems: 'center', marginTop: 10 }}>
         <span className="demo-label">Port {PORT_SVC[+port] ? `· ${PORT_SVC[+port]}` : ''}</span>
-        <input type="number" value={port} onChange={(e) => { setPort(e.target.value); reset(); }}
+        <input type="number" aria-label="Nomor port" value={port} onChange={(e) => { setPort(e.target.value); reset(); }}
           style={{ ...inputStyle, width: 92, textAlign: 'center' }} />
       </div>
       <button onClick={run} disabled={!host.trim() || state === 'checking'} className="btn btn-primary"
