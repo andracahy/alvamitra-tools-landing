@@ -112,7 +112,7 @@ export const ViewingAngleDemo = () => {
       </svg>
       <div className="demo-row" style={{ marginTop: 6 }}>
         <span><span className="demo-out" style={{ fontSize: 24 }}>{aov.toFixed(0)}°</span> <span style={{ fontSize: 12, color: 'var(--muted)' }}>angle of view</span></span>
-        <span style={{ fontSize: 12.5, color: 'var(--body)' }}>≈ {widthAt10.toFixed(1)} m lebar @ 10 m</span>
+        <span style={{ fontSize: 12.5, color: 'var(--body)' }}>liputan ≈ {widthAt10.toFixed(1)} m lebar di jarak 10 m</span>
       </div>
     </div>
   );
