@@ -52,7 +52,7 @@ export const CctvCalcDemo = () => {
   const [focal, setFocal] = useState(3.6);
   const [mp, setMp] = useState(2);
   const [d, setD] = useState(9);
-  const sensorW = 4.8; // mm (1/2.7")
+  const sensorW = 4.8; // mm (lebar sensor 1/3")
   const horizRes = ({ 2: 1920, 4: 2560, 8: 3840 } as Record<number, number>)[mp];
   const density = (horizRes * focal) / (sensorW * d); // px/m
   const reached = DORI.filter((l) => density >= l.min);
@@ -145,9 +145,7 @@ export const StorageDemo = () => {
   const tb = (cams * gbPerCamDay * days) / 1000;
   return (
     <div className="demo">
-      <Field label="Jumlah kamera">
-        <Seg label="Jumlah kamera" val={cams} set={setCams} opts={[{ v: 4, l: '4' }, { v: 8, l: '8' }, { v: 16, l: '16' }]} />
-      </Field>
+      <Field label="Jumlah kamera"><Stepper label="jumlah kamera" val={cams} set={setCams} min={1} max={32} /></Field>
       <Field label="Retensi"><span className="demo-val">{days} hari</span></Field>
       <input type="range" aria-label="Retensi (hari)" min="3" max="90" step="1" value={days} onChange={(e) => setDays(+e.target.value)} />
       <Result sub="storage dibutuhkan">{tb.toFixed(1)} <span style={{ fontSize: 16, fontWeight: 700 }}>TB</span></Result>
@@ -230,7 +228,7 @@ export const SubnetDemo = () => {
       </div>
       <div className="demo-row" style={{ marginTop: 8 }}>
         <span className="demo-label">Contoh network</span>
-        <span style={{ fontFamily: 'ui-monospace, monospace', fontWeight: 600, color: 'var(--blue)', fontSize: 13.5 }}>192.168.1.0/{cidr}</span>
+        <span style={{ fontFamily: 'ui-monospace, monospace', fontWeight: 600, color: 'var(--blue)', fontSize: 13.5 }}>192.168.0.0/{cidr}</span>
       </div>
     </div>
   );
@@ -290,16 +288,18 @@ export const PortTestDemo = () => {
       <div className="demo-row" style={{ alignItems: 'center' }}>
         <span className="demo-label">IP / domain</span>
         <input type="text" aria-label="IP atau domain target" value={host} onChange={(e) => { setHost(e.target.value); reset(); }}
+          onKeyDown={(e) => e.key === 'Enter' && run()}
           placeholder={ipState === 'loading' ? 'mendeteksi IP…' : '203.0.113.1'}
           style={{ ...inputStyle, width: 150 }} />
       </div>
       <div className="demo-row" style={{ alignItems: 'center', marginTop: 10 }}>
         <span className="demo-label">Port {PORT_SVC[+port] ? `· ${PORT_SVC[+port]}` : ''}</span>
         <input type="number" aria-label="Nomor port" value={port} onChange={(e) => { setPort(e.target.value); reset(); }}
+          onKeyDown={(e) => e.key === 'Enter' && run()}
           style={{ ...inputStyle, width: 92, textAlign: 'center' }} />
       </div>
-      <button onClick={run} disabled={!host.trim() || state === 'checking'} className="btn btn-primary"
-        style={{ width: '100%', justifyContent: 'center', marginTop: 14, padding: '11px', opacity: !host.trim() ? 0.6 : 1 }}>
+      <button onClick={run} disabled={!host.trim() || !(+port) || state === 'checking'} className="btn btn-primary"
+        style={{ width: '100%', justifyContent: 'center', marginTop: 14, padding: '11px', opacity: (!host.trim() || !(+port)) ? 0.6 : 1 }}>
         {state === 'checking' ? 'Mengecek…' : 'Cek port'}
       </button>
       <div style={{ marginTop: 14, minHeight: 44, display: 'flex', alignItems: 'center', gap: 11 }}>
