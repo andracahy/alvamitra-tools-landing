@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import ValueBand from '../components/ValueBand.astro';
+import Workflow from '../components/Workflow.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+import Footer from '../components/Footer.astro';
+import DemoIsland from '../components/DemoIsland';
+import { IconArrow } from '../components/icons';
+import { GROUPS } from '../data/tools';
+---
+
+<Base>
+  <Hero />
+  <ValueBand />
+
+  <section id="tools" class="wrap section">
+    <div class="sec-intro reveal">
+      <div class="kicker">Tools</div>
+      <h2>Coba langsung sebelum membuka tool penuh</h2>
+      <p>Setiap kartu punya demo mini interaktif — geser dan klik untuk merasakan cara kerjanya. Siap menghitung serius? Buka tool versi lengkapnya.</p>
+    </div>
+    {GROUPS.map((g) => (
+      <div class="group">
+        <div class="group-label reveal">{g.label}</div>
+        <div class="group-grid">
+          {g.tools.map((t, i) => {
+            const Ico = t.ico;
+            return (
+              <article class="tcard reveal" style={`transition-delay: ${i * 80}ms`} data-screen-label={t.name}>
+                <div class="tcard-top">
+                  <div class="tbadge"><Ico size={23} /></div>
+                  <div class="meta">
+                    <h3>{t.name}</h3>
+                    <div class="id-sub">{t.sub}</div>
+                  </div>
+                  <span class="demo-pill"><i></i>Demo</span>
+                </div>
+                <p class="desc">{t.desc}</p>
+                <div class="when"><b>Kapan dipakai:</b> {t.when}.</div>
+                <DemoIsland id={t.demo} client:visible />
+                <div class="tcard-foot">
+                  <a class="tcta" href={t.url}><span>Buka tool lengkap</span><IconArrow className="arrow" size={17} /></a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    ))}
+  </section>
+
+  <Workflow />
+  <FinalCTA />
+  <Footer />
+</Base>
+
+<script>
+  // Scroll reveal — reveal in-view items langsung, observe sisanya, fail-safe.
+  const els = Array.from(document.querySelectorAll<HTMLElement>('.reveal'));
+  const show = (e: Element) => e.classList.add('in');
+  const inView = (e: Element) => {
+    const r = e.getBoundingClientRect();
+    return r.top < window.innerHeight * 0.95 && r.bottom > 0;
+  };
+  els.forEach((e) => { if (inView(e)) show(e); });
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) { show(en.target); io.unobserve(en.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+    els.forEach((e) => { if (!e.classList.contains('in')) io.observe(e); });
+    setTimeout(() => els.forEach(show), 2500);
+  } else {
+    els.forEach(show);
+  }
+</script>

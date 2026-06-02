@@ -1,0 +1,72 @@
+---
+import { IconArrow } from './icons';
+import { LOGO } from '../data/tools';
+---
+
+<header class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <div class="hero-brand reveal">
+        <img src={LOGO} alt="ALVAMITRA" />
+        <span class="hero-brand-div"></span>
+        <span class="hero-brand-tag">Tools</span>
+      </div>
+      <span class="eyebrow reveal"><span class="dot"></span>8 tools gratis dari ALVAMITRA</span>
+      <h1 class="reveal">Rancang sistem CCTV <span class="hl">tanpa tebak-tebakan.</span></h1>
+      <p class="lede reveal">Hitung coverage, bandwidth, storage, PoE budget, sampai subnet — semua dalam hitungan detik. Tools gratis dari ALVAMITRA untuk bikin setiap proposal presisi sejak awal.</p>
+      <div class="hero-cta reveal">
+        <a class="btn btn-primary" href="#tools">Jelajahi tools <IconArrow className="arrow" /></a>
+        <a class="btn btn-ghost" href="#alur">Lihat alur kerja</a>
+      </div>
+      <div class="hero-stats reveal">
+        <div class="s"><b>8</b><span>kalkulator siap pakai</span></div>
+        <div class="s"><b>Gratis</b><span>tanpa login</span></div>
+        <div class="s"><b>Instan</b><span>hasil real-time</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="scene reveal">
+        <div class="scene-head">
+          <span class="t">Denah coverage · contoh</span>
+          <span class="live"><i></i>Live preview</span>
+        </div>
+        <svg viewBox="0 0 440 300" role="img" aria-label="Ilustrasi cakupan kamera">
+          <rect x="24" y="24" width="392" height="252" rx="10" fill="#fff" stroke="var(--border-strong)" stroke-width="2" />
+          <rect x="24" y="24" width="392" height="252" rx="10" fill="url(#grid)" />
+          <defs>
+            <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <path d="M32 0H0V32" fill="none" stroke="#eef2f8" stroke-width="1" />
+            </pattern>
+          </defs>
+          <rect x="70" y="150" width="86" height="46" rx="6" fill="#eef2f8" />
+          <rect x="250" y="80" width="64" height="64" rx="6" fill="#eef2f8" />
+          <rect x="300" y="196" width="80" height="40" rx="6" fill="#eef2f8" />
+          <g>
+            <path d="M52 52 L300 120 L210 250 Z" fill="rgba(37,99,235,.13)" stroke="rgba(37,99,235,.32)" stroke-width="1.4" />
+            <animateTransform attributeName="transform" type="rotate" values="-6 52 52;7 52 52;-6 52 52" dur="6.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1" />
+          </g>
+          <g>
+            <path d="M388 52 L150 116 L250 252 Z" fill="rgba(37,99,235,.1)" stroke="rgba(37,99,235,.28)" stroke-width="1.4" />
+            <animateTransform attributeName="transform" type="rotate" values="5 388 52;-7 388 52;5 388 52" dur="7.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1" />
+          </g>
+          <g>
+            <circle cx="52" cy="52" r="13" fill="var(--blue)" />
+            <circle cx="52" cy="52" r="13" fill="none" stroke="var(--blue)" stroke-width="2" opacity="0.35">
+              <animate attributeName="r" values="13;24;13" dur="3s" begin="0s" repeatCount="indefinite" />
+              <animate attributeName="opacity" values="0.4;0;0.4" dur="3s" begin="0s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="52" cy="52" r="4.5" fill="#fff" />
+          </g>
+          <g>
+            <circle cx="388" cy="52" r="13" fill="var(--blue)" />
+            <circle cx="388" cy="52" r="13" fill="none" stroke="var(--blue)" stroke-width="2" opacity="0.35">
+              <animate attributeName="r" values="13;24;13" dur="3s" begin="1.2s" repeatCount="indefinite" />
+              <animate attributeName="opacity" values="0.4;0;0.4" dur="3s" begin="1.2s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="388" cy="52" r="4.5" fill="#fff" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</header>

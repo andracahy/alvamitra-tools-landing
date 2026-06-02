@@ -1,33 +1,42 @@
 /* ALVAMITRA — mini-demo previews (live, interactive teasers for each tool) */
-const { useState } = React;
+import { useState } from 'react';
+import type { ReactNode } from 'react';
+import { IconCheck } from './icons';
 
 /* shared bits ---------------------------------------------------------- */
-const Field = ({ label, children }) => (
+const Field = ({ label, children }: { label: string; children: ReactNode }) => (
   <div className="demo-row" style={{ marginBottom: 12 }}>
     <span className="demo-label">{label}</span>
     {children}
   </div>
 );
-const Seg = ({ opts, val, set }) => (
-  <div className="seg">
-    {opts.map((o) => (
-      <button key={o.v} className={val === o.v ? 'on' : ''} onClick={() => set(o.v)}>{o.l}</button>
-    ))}
-  </div>
-);
-const Stepper = ({ val, set, min = 1, max = 99 }) => (
+
+interface SegOpt<T> { v: T; l: string; }
+function Seg<T extends string | number>({ opts, val, set }: { opts: SegOpt<T>[]; val: T; set: (v: T) => void }) {
+  return (
+    <div className="seg">
+      {opts.map((o) => (
+        <button key={String(o.v)} className={val === o.v ? 'on' : ''} onClick={() => set(o.v)}>{o.l}</button>
+      ))}
+    </div>
+  );
+}
+
+const Stepper = ({ val, set, min = 1, max = 99 }: { val: number; set: (v: number) => void; min?: number; max?: number }) => (
   <div className="stepper">
     <button onClick={() => set(Math.max(min, val - 1))}>−</button>
     <span className="n">{val}</span>
     <button onClick={() => set(Math.min(max, val + 1))}>+</button>
   </div>
 );
-const Bar = ({ pct, color }) => (
+
+const Bar = ({ pct, color }: { pct: number; color?: string }) => (
   <div className="bar-track" style={{ marginTop: 12 }}>
     <div className="bar-fill" style={{ width: Math.max(3, Math.min(100, pct)) + '%', background: color || undefined }} />
   </div>
 );
-const Result = ({ children, sub }) => (
+
+const Result = ({ children, sub }: { children: ReactNode; sub?: string }) => (
   <div style={{ marginTop: 14, display: 'flex', alignItems: 'baseline', gap: 8 }}>
     <span className="demo-out" style={{ fontSize: 30 }}>{children}</span>
     {sub && <span style={{ fontSize: 13, color: 'var(--muted)' }}>{sub}</span>}
@@ -39,12 +48,12 @@ const DORI = [
   { k: 'Deteksi', min: 25 }, { k: 'Observasi', min: 62.5 },
   { k: 'Kenali', min: 125 }, { k: 'Identifikasi', min: 250 },
 ];
-const CctvCalcDemo = () => {
+export const CctvCalcDemo = () => {
   const [focal, setFocal] = useState(3.6);
   const [mp, setMp] = useState(2);
   const [d, setD] = useState(9);
   const sensorW = 4.8; // mm (1/2.7")
-  const horizRes = { 2: 1920, 4: 2560, 8: 3840 }[mp];
+  const horizRes = ({ 2: 1920, 4: 2560, 8: 3840 } as Record<number, number>)[mp];
   const density = (horizRes * focal) / (sensorW * d); // px/m
   const reached = DORI.filter((l) => density >= l.min);
   const top = reached.length ? reached[reached.length - 1].k : 'Di bawah deteksi';
@@ -80,7 +89,7 @@ const CctvCalcDemo = () => {
 };
 
 /* 2 — Viewing Angle ---------------------------------------------------- */
-const ViewingAngleDemo = () => {
+export const ViewingAngleDemo = () => {
   const [f, setF] = useState(4);
   const sensorW = 4.8; // 1/3" approx
   const aov = 2 * Math.atan(sensorW / (2 * f)) * 180 / Math.PI;
@@ -108,10 +117,10 @@ const ViewingAngleDemo = () => {
 };
 
 /* 3 — Bandwidth Calculator -------------------------------------------- */
-const BandwidthDemo = () => {
+export const BandwidthDemo = () => {
   const [cams, setCams] = useState(8);
   const [res, setRes] = useState(4);
-  const per = { 2: 4, 4: 8, 8: 16 }[res];
+  const per = ({ 2: 4, 4: 8, 8: 16 } as Record<number, number>)[res];
   const total = cams * per;
   return (
     <div className="demo">
@@ -127,7 +136,7 @@ const BandwidthDemo = () => {
 };
 
 /* 4 — Storage Needs ---------------------------------------------------- */
-const StorageDemo = () => {
+export const StorageDemo = () => {
   const [days, setDays] = useState(30);
   const [cams, setCams] = useState(8);
   const gbPerCamDay = 86.4; // 8 Mbps H.265
@@ -147,7 +156,7 @@ const StorageDemo = () => {
 };
 
 /* 5 — Wireless Link Signal -------------------------------------------- */
-const WirelessDemo = () => {
+export const WirelessDemo = () => {
   const [d, setD] = useState(1.2);
   const pct = Math.max(5, Math.min(100, 102 - d * 19));
   const dbm = Math.round(-38 - d * 8.5);
@@ -174,7 +183,7 @@ const WirelessDemo = () => {
 };
 
 /* 6 — PoE Budget Calculator ------------------------------------------- */
-const PoeDemo = () => {
+export const PoeDemo = () => {
   const [budget, setBudget] = useState(130);
   const [cams, setCams] = useState(12);
   const per = 6.5;
@@ -201,10 +210,10 @@ const PoeDemo = () => {
 };
 
 /* 7 — IPv4 / Subnet Planner ------------------------------------------- */
-const SubnetDemo = () => {
+export const SubnetDemo = () => {
   const [cidr, setCidr] = useState(24);
   const hosts = Math.max(0, Math.pow(2, 32 - cidr) - 2);
-  const maskParts = [];
+  const maskParts: number[] = [];
   let bits = cidr;
   for (let i = 0; i < 4; i++) { const t = Math.min(8, Math.max(0, bits)); maskParts.push(256 - Math.pow(2, 8 - t)); bits -= 8; }
   const mask = maskParts.join('.');
@@ -226,16 +235,16 @@ const SubnetDemo = () => {
 };
 
 /* 8 — Port Forwarding Test -------------------------------------------- */
-const PortTestDemo = () => {
-  const [port, setPort] = useState(554);
-  const [state, setState] = useState('idle'); // idle | checking | done
+export const PortTestDemo = () => {
+  const [port, setPort] = useState<string | number>(554);
+  const [state, setState] = useState<'idle' | 'checking' | 'done'>('idle');
   const open = [80, 443, 554, 8000, 8200, 37777, 34567, 8899].includes(+port);
   const run = () => { setState('checking'); setTimeout(() => setState('done'), 1000); };
-  const common = { 554: 'RTSP', 80: 'HTTP', 443: 'HTTPS', 37777: 'Dahua', 8000: 'Hikvision' };
+  const common: Record<number, string> = { 554: 'RTSP', 80: 'HTTP', 443: 'HTTPS', 37777: 'Dahua', 8000: 'Hikvision' };
   return (
     <div className="demo">
       <div className="demo-row" style={{ alignItems: 'center' }}>
-        <span className="demo-label">Port number {common[port] ? `· ${common[port]}` : ''}</span>
+        <span className="demo-label">Port number {common[+port] ? `· ${common[+port]}` : ''}</span>
         <input type="number" value={port} onChange={(e) => { setPort(e.target.value); setState('idle'); }}
           style={{ width: 92, padding: '8px 10px', border: '1px solid var(--border-strong)', borderRadius: 8, fontFamily: 'ui-monospace, monospace', fontWeight: 700, fontSize: 14, color: 'var(--ink)', textAlign: 'center' }} />
       </div>
@@ -248,23 +257,14 @@ const PortTestDemo = () => {
           <span style={{ display: 'inline-block', width: 18, height: 18, border: '3px solid var(--border-strong)', borderTopColor: 'var(--blue)', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
         )}
         {state === 'done' && (
-          <React.Fragment>
+          <>
             <span style={{ width: 11, height: 11, borderRadius: '50%', background: open ? 'var(--ok)' : 'var(--warm)' }} />
             <span style={{ fontWeight: 700, color: open ? 'var(--ok)' : 'var(--warm)', fontFamily: 'var(--font-head)' }}>
               Port {port} {open ? 'TERBUKA' : 'TERTUTUP'}
             </span>
-          </React.Fragment>
+          </>
         )}
       </div>
     </div>
   );
 };
-
-const styleSpin = document.createElement('style');
-styleSpin.textContent = '@keyframes spin{to{transform:rotate(360deg)}} input[type=number]::-webkit-inner-spin-button{opacity:.4}';
-document.head.appendChild(styleSpin);
-
-Object.assign(window, {
-  CctvCalcDemo, ViewingAngleDemo, BandwidthDemo, StorageDemo,
-  WirelessDemo, PoeDemo, SubnetDemo, PortTestDemo,
-});

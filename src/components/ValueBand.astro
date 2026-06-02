@@ -1,0 +1,18 @@
+---
+import { VALUES } from '../data/tools';
+---
+
+<section class="wrap values" style="margin-top: 8px">
+  <div class="values-grid">
+    {VALUES.map((v, i) => {
+      const Ico = v.ico;
+      return (
+        <div class="vcard reveal" style={`transition-delay: ${i * 70}ms`}>
+          <div class="vico"><Ico size={20} /></div>
+          <h4>{v.t}</h4>
+          <p>{v.d}</p>
+        </div>
+      );
+    })}
+  </div>
+</section>
