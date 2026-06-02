@@ -1,6 +1,6 @@
 ---
 import { IconArrow } from './icons';
-import { LOGO } from '../data/tools';
+import { LOGO, TOOLS_URL } from '../data/tools';
 ---
 
 <header class="hero">
@@ -15,7 +15,7 @@ import { LOGO } from '../data/tools';
       <h1 class="reveal">Rancang sistem CCTV <span class="hl">tanpa tebak-tebakan.</span></h1>
       <p class="lede reveal">Hitung coverage, bandwidth, storage, PoE budget, sampai subnet — semua dalam hitungan detik. Tools gratis dari ALVAMITRA untuk bikin setiap proposal presisi sejak awal.</p>
       <div class="hero-cta reveal">
-        <a class="btn btn-primary" href="#tools">Jelajahi tools <IconArrow className="arrow" /></a>
+        <a class="btn btn-primary" href={TOOLS_URL}>Jelajahi tools <IconArrow className="arrow" /></a>
         <a class="btn btn-ghost" href="#alur">Lihat alur kerja</a>
       </div>
       <div class="hero-stats reveal">
