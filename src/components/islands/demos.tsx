@@ -1,7 +1,7 @@
 /* ALVAMITRA — mini-demo previews (live, interactive teasers for each tool) */
 import { useState } from 'react';
 import type { ReactNode } from 'react';
-import { IconCheck } from './icons';
+import { IconCheck } from '../icons';
 
 /* shared bits ---------------------------------------------------------- */
 const Field = ({ label, children }: { label: string; children: ReactNode }) => (

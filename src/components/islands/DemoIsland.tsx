@@ -4,7 +4,7 @@ import {
   CctvCalcDemo, ViewingAngleDemo, BandwidthDemo, StorageDemo,
   WirelessDemo, PoeDemo, SubnetDemo, PortTestDemo,
 } from './demos';
-import type { DemoId } from '../data/tools';
+import type { DemoId } from '../../data/content';
 
 const DEMOS: Record<DemoId, React.ComponentType> = {
   cctv: CctvCalcDemo,
