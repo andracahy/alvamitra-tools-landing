@@ -59,14 +59,14 @@ export const CctvCalcDemo = () => {
   const top = reached.length ? reached[reached.length - 1].k : 'Di bawah deteksi';
   return (
     <div className="demo">
-      <Field label="Focal length">
-        <Seg label="Focal length" val={focal} set={setFocal} opts={[{ v: 2.8, l: '2.8' }, { v: 3.6, l: '3.6' }, { v: 6, l: '6' }, { v: 12, l: '12mm' }]} />
-      </Field>
-      <Field label="Resolusi">
-        <Seg label="Resolusi" val={mp} set={setMp} opts={[{ v: 2, l: '2MP' }, { v: 4, l: '4MP' }, { v: 8, l: '8MP' }]} />
-      </Field>
-      <Field label="Jarak ke objek"><span className="demo-val">{d} m</span></Field>
-      <input type="range" aria-label="Jarak ke objek (meter)" min="1" max="20" step="1" value={d} onChange={(e) => setD(+e.target.value)} />
+        <Field label="Focal length">
+          <Seg label="Focal length" val={focal} set={setFocal} opts={[{ v: 2.8, l: '2.8' }, { v: 3.6, l: '3.6' }, { v: 6, l: '6' }, { v: 12, l: '12mm' }]} />
+        </Field>
+        <Field label="Resolusi">
+          <Seg label="Resolusi" val={mp} set={setMp} opts={[{ v: 2, l: '2MP' }, { v: 4, l: '4MP' }, { v: 8, l: '8MP' }]} />
+        </Field>
+        <Field label="Jarak ke objek"><span className="demo-val">{d} m</span></Field>
+        <input type="range" aria-label="Jarak ke objek (meter)" min="1" max="20" step="1" value={d} onChange={(e) => setD(+e.target.value)} />
       <div className="demo-row" style={{ marginTop: 14, alignItems: 'baseline' }}>
         <span className="demo-out" style={{ fontSize: 28 }}>{density.toFixed(0)} <span style={{ fontSize: 14, fontWeight: 700 }}>px/m</span></span>
         <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink)' }}>{top}</span>
@@ -298,10 +298,10 @@ export const PortTestDemo = () => {
       </div>
       <button onClick={run} disabled={!host.trim() || state === 'checking'} className="btn btn-primary"
         style={{ width: '100%', justifyContent: 'center', marginTop: 14, padding: '11px', opacity: !host.trim() ? 0.6 : 1 }}>
-        {state === 'checking' ? 'Mengecek…' : 'Cek port sungguhan'}
+        {state === 'checking' ? 'Mengecek…' : 'Cek port'}
       </button>
       <div style={{ marginTop: 14, minHeight: 44, display: 'flex', alignItems: 'center', gap: 11 }}>
-        {state === 'idle' && <span style={{ fontSize: 12.5, color: 'var(--muted)' }}>Cek dari server eksternal — hasil nyata, bukan simulasi.</span>}
+        {state === 'idle' && <span style={{ fontSize: 12.5, color: 'var(--muted)' }}>Dicek dari server eksternal agar hasilnya akurat.</span>}
         {state === 'checking' && (
           <span style={{ display: 'inline-block', width: 18, height: 18, border: '3px solid var(--border-strong)', borderTopColor: 'var(--blue)', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
         )}
