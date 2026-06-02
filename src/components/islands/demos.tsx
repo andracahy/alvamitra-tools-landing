@@ -97,14 +97,14 @@ export const ViewingAngleDemo = () => {
   // Jarak DIKUNCI (radius tetap = jarak acuan 10 m); hanya sudut/lebar yang
   // berubah. Panjang kipas tidak boleh berubah ikut sudut — itu menyesatkan
   // (terbaca seolah jangkauan mengecil). Sudut lebar = liputan lebih lebar.
-  const cx = 24, cy = 95, R = 120, half = (aov / 2) * Math.PI / 180;
+  const cx = 24, cy = 75, R = 100, half = (aov / 2) * Math.PI / 180;
   const tx = cx + R * Math.cos(half), ty = cy - R * Math.sin(half);
   const bx = cx + R * Math.cos(half), by = cy + R * Math.sin(half);
   return (
     <div className="demo">
       <Field label="Focal length"><span className="demo-val">{f.toFixed(1)} mm</span></Field>
       <input type="range" aria-label="Focal length (mm)" min="2.8" max="12" step="0.2" value={f} onChange={(e) => setF(+e.target.value)} />
-      <svg viewBox="0 0 220 190" style={{ width: '100%', height: 'auto', marginTop: 12 }}>
+      <svg viewBox="0 0 220 150" style={{ width: '100%', height: 'auto', marginTop: 12 }}>
         <path d={`M${cx} ${cy} L${tx} ${ty} A${R} ${R} 0 0 1 ${bx} ${by} Z`} fill="color-mix(in srgb, var(--blue) 16%, transparent)" stroke="var(--blue)" strokeOpacity="0.4" strokeWidth="1" />
         <line x1={cx} y1={cy} x2={tx} y2={ty} stroke="var(--blue)" strokeWidth="1.4" />
         <line x1={cx} y1={cy} x2={bx} y2={by} stroke="var(--blue)" strokeWidth="1.4" />
