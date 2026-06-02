@@ -94,20 +94,23 @@ export const ViewingAngleDemo = () => {
   const sensorW = 4.8; // 1/3" approx
   const aov = 2 * Math.atan(sensorW / (2 * f)) * 180 / Math.PI;
   const widthAt10 = 2 * 10 * Math.tan((aov / 2) * Math.PI / 180);
-  // Geometri kipas — clamp panjang sinar agar selalu muat di viewBox
-  // (sudut lebar -> sinar pendek; sudut sempit -> sinar panjang).
-  const cx = 20, cy = 48, half = (aov / 2) * Math.PI / 180;
-  const L = Math.min(192 / Math.cos(half), 42 / Math.sin(half));
-  const tx = cx + L * Math.cos(half), ty = cy - L * Math.sin(half);
-  const bx = cx + L * Math.cos(half), by = cy + L * Math.sin(half);
+  // Jarak DIKUNCI (radius tetap = jarak acuan 10 m); hanya sudut/lebar yang
+  // berubah. Panjang kipas tidak boleh berubah ikut sudut — itu menyesatkan
+  // (terbaca seolah jangkauan mengecil). Sudut lebar = liputan lebih lebar.
+  const cx = 24, cy = 95, R = 120, half = (aov / 2) * Math.PI / 180;
+  const tx = cx + R * Math.cos(half), ty = cy - R * Math.sin(half);
+  const bx = cx + R * Math.cos(half), by = cy + R * Math.sin(half);
   return (
     <div className="demo">
       <Field label="Focal length"><span className="demo-val">{f.toFixed(1)} mm</span></Field>
       <input type="range" aria-label="Focal length (mm)" min="2.8" max="12" step="0.2" value={f} onChange={(e) => setF(+e.target.value)} />
-      <svg viewBox="0 0 230 96" style={{ width: '100%', height: 'auto', marginTop: 12 }}>
-        <path d={`M${cx} ${cy} L${tx} ${ty} A${L} ${L} 0 0 1 ${bx} ${by} Z`} fill="color-mix(in srgb, var(--blue) 16%, transparent)" stroke="var(--blue)" strokeOpacity="0.4" strokeWidth="1" />
+      <svg viewBox="0 0 220 190" style={{ width: '100%', height: 'auto', marginTop: 12 }}>
+        <path d={`M${cx} ${cy} L${tx} ${ty} A${R} ${R} 0 0 1 ${bx} ${by} Z`} fill="color-mix(in srgb, var(--blue) 16%, transparent)" stroke="var(--blue)" strokeOpacity="0.4" strokeWidth="1" />
         <line x1={cx} y1={cy} x2={tx} y2={ty} stroke="var(--blue)" strokeWidth="1.4" />
         <line x1={cx} y1={cy} x2={bx} y2={by} stroke="var(--blue)" strokeWidth="1.4" />
+        {/* garis tengah = jarak acuan tetap 10 m */}
+        <line x1={cx} y1={cy} x2={cx + R} y2={cy} stroke="var(--blue)" strokeWidth="1" strokeDasharray="3 4" strokeOpacity="0.55" />
+        <text x={cx + R / 2} y={cy - 6} textAnchor="middle" fontSize="10" fontWeight="700" fill="var(--muted)" fontFamily="ui-monospace, monospace">10 m</text>
         <circle cx={cx} cy={cy} r="6" fill="var(--blue)" />
       </svg>
       <div className="demo-row" style={{ marginTop: 6 }}>
