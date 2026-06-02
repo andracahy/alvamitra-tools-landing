@@ -108,9 +108,6 @@ export const ViewingAngleDemo = () => {
         <path d={`M${cx} ${cy} L${tx} ${ty} A${R} ${R} 0 0 1 ${bx} ${by} Z`} fill="color-mix(in srgb, var(--blue) 16%, transparent)" stroke="var(--blue)" strokeOpacity="0.4" strokeWidth="1" />
         <line x1={cx} y1={cy} x2={tx} y2={ty} stroke="var(--blue)" strokeWidth="1.4" />
         <line x1={cx} y1={cy} x2={bx} y2={by} stroke="var(--blue)" strokeWidth="1.4" />
-        {/* garis tengah = jarak acuan tetap 10 m */}
-        <line x1={cx} y1={cy} x2={cx + R} y2={cy} stroke="var(--blue)" strokeWidth="1" strokeDasharray="3 4" strokeOpacity="0.55" />
-        <text x={cx + R / 2} y={cy - 6} textAnchor="middle" fontSize="10" fontWeight="700" fill="var(--muted)" fontFamily="ui-monospace, monospace">10 m</text>
         <circle cx={cx} cy={cy} r="6" fill="var(--blue)" />
       </svg>
       <div className="demo-row" style={{ marginTop: 6 }}>
