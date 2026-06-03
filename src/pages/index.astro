@@ -27,7 +27,7 @@ import { GROUPS } from '../data/content';
           {g.tools.map((t, i) => {
             const Ico = t.ico;
             return (
-              <article class="tcard reveal" style={`transition-delay: ${i * 80}ms`} data-screen-label={t.name}>
+              <article class="tcard reveal" style={`transition-delay: ${i * 80}ms`} data-screen-label={t.name} data-pixel-event={t.pixelEvent}>
                 <div class="tcard-top">
                   <div class="tbadge"><Ico size={23} /></div>
                   <div class="meta">
@@ -78,4 +78,42 @@ import { GROUPS } from '../data/content';
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.querySelectorAll('svg').forEach((s) => (s as SVGSVGElement).pauseAnimations?.());
   }
+
+  // Meta Pixel event tracking
+  const fbq = (...args: unknown[]) => {
+    if (typeof (window as { fbq?: (...a: unknown[]) => void }).fbq === 'function') {
+      (window as { fbq: (...a: unknown[]) => void }).fbq(...args);
+    }
+  };
+
+  // ViewContent — saat section tools pertama kali terlihat
+  const toolsSection = document.getElementById('tools');
+  if (toolsSection && 'IntersectionObserver' in window) {
+    const viewIo = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          fbq('track', 'ViewContent', { content_name: 'Tools Section' });
+          viewIo.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    viewIo.observe(toolsSection);
+  }
+
+  // Custom event spesifik per tool (SelectCCTVCalculator, SelectViewingAngle, dst.)
+  document.querySelectorAll<HTMLAnchorElement>('.tcta').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest<HTMLElement>('[data-pixel-event]');
+      const eventName = card?.dataset.pixelEvent ?? 'SelectTool';
+      fbq('trackCustom', eventName);
+    });
+  });
+
+  // Lead — klik tombol CTA utama (Hero & Final CTA)
+  document.querySelector<HTMLAnchorElement>('.btn-primary')?.addEventListener('click', () => {
+    fbq('track', 'Lead', { content_name: 'Hero CTA', content_category: 'cta' });
+  });
+  document.querySelector<HTMLAnchorElement>('.btn-white')?.addEventListener('click', () => {
+    fbq('track', 'Lead', { content_name: 'Final CTA', content_category: 'cta' });
+  });
 </script>

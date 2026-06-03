@@ -21,6 +21,7 @@ export interface Tool {
   desc: string;
   when: string;
   demo: DemoId;
+  pixelEvent: string;
 }
 
 export interface ToolGroup {
@@ -34,10 +35,10 @@ export const GROUPS: ToolGroup[] = [
     tools: [
       { ico: IconCamera, name: 'CCTV Calculator', sub: 'Kalkulator DORI', url: U + 'cctv-calculator',
         desc: 'Hitung kepadatan pixel (px/m) dari focal length, ukuran sensor, dan resolusi untuk tahu level DORI — Deteksi, Observasi, Kenali, Identifikasi — pada jarak tertentu.',
-        when: 'menentukan lensa & posisi kamera agar wajah/plat terbaca jelas', demo: 'cctv' },
+        when: 'menentukan lensa & posisi kamera agar wajah/plat terbaca jelas', demo: 'cctv', pixelEvent: 'SelectCCTVCalculator' },
       { ico: IconEye, name: 'Viewing Angle', sub: 'Sudut pandang & lensa', url: U + 'viewing-angle',
         desc: 'Lihat hubungan focal length dengan angle of view serta lebar area yang tertangkap pada jarak tertentu.',
-        when: 'memilih lensa fixed / varifocal untuk tiap titik', demo: 'viewing' },
+        when: 'memilih lensa fixed / varifocal untuk tiap titik', demo: 'viewing', pixelEvent: 'SelectViewingAngle' },
     ],
   },
   {
@@ -45,10 +46,10 @@ export const GROUPS: ToolGroup[] = [
     tools: [
       { ico: IconBolt, name: 'Bandwidth Calculator', sub: 'Beban jaringan', url: U + 'bandwidth',
         desc: 'Hitung total throughput dari seluruh kamera supaya switch dan uplink tidak kelebihan beban.',
-        when: 'merancang topologi jaringan & memilih switch', demo: 'bandwidth' },
+        when: 'merancang topologi jaringan & memilih switch', demo: 'bandwidth', pixelEvent: 'SelectBandwidthCalculator' },
       { ico: IconStorage, name: 'Storage Needs', sub: 'Kapasitas rekaman', url: U + 'storage',
         desc: 'Estimasi kapasitas HDD/NVR berdasarkan jumlah kamera, bitrate, dan lama retensi rekaman.',
-        when: 'menentukan ukuran storage & durasi backup', demo: 'storage' },
+        when: 'menentukan ukuran storage & durasi backup', demo: 'storage', pixelEvent: 'SelectStorageCalculator' },
     ],
   },
   {
@@ -56,10 +57,10 @@ export const GROUPS: ToolGroup[] = [
     tools: [
       { ico: IconWifi, name: 'Wireless Link Signal', sub: 'Kualitas link nirkabel', url: U + 'wireless-signal',
         desc: 'Perkirakan kekuatan sinyal point-to-point berdasarkan jarak untuk link antar gedung.',
-        when: 'memasang kamera di lokasi tanpa kabel', demo: 'wireless' },
+        when: 'memasang kamera di lokasi tanpa kabel', demo: 'wireless', pixelEvent: 'SelectWirelessCalculator' },
       { ico: IconCpu, name: 'PoE Budget Calculator', sub: 'Anggaran daya switch', url: U + 'poe-budget',
         desc: 'Pastikan total konsumsi daya seluruh kamera tidak melebihi PoE budget dari switch yang dipilih.',
-        when: 'memilih PoE switch & mencegah kamera mati mendadak', demo: 'poe' },
+        when: 'memilih PoE switch & mencegah kamera mati mendadak', demo: 'poe', pixelEvent: 'SelectPoECalculator' },
     ],
   },
   {
@@ -67,10 +68,10 @@ export const GROUPS: ToolGroup[] = [
     tools: [
       { ico: IconGrid, name: 'IPv4 / Subnet Planner', sub: 'Pengalamatan IP', url: U + 'subnet',
         desc: 'Rencanakan subnet, jumlah host, dan subnet mask untuk jaringan kamera yang rapi dan terstruktur.',
-        when: 'setup IP statis & segmentasi jaringan', demo: 'subnet' },
+        when: 'setup IP statis & segmentasi jaringan', demo: 'subnet', pixelEvent: 'SelectSubnetCalculator' },
       { ico: IconSliders, name: 'Port Forwarding Test', sub: 'Akses jarak jauh', url: U + 'port-test',
         desc: 'Cek apakah port untuk akses remote (RTSP, HTTP, web NVR) sudah terbuka dari internet.',
-        when: 'mengaktifkan akses CCTV dari luar jaringan', demo: 'port' },
+        when: 'mengaktifkan akses CCTV dari luar jaringan', demo: 'port', pixelEvent: 'SelectPortTest' },
     ],
   },
 ];
