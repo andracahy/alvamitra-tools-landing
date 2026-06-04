@@ -38,7 +38,7 @@ import { GROUPS } from '../data/content';
                 </div>
                 <p class="desc">{t.desc}</p>
                 <div class="when"><b>Kapan dipakai:</b> {t.when}.</div>
-                <DemoIsland id={t.demo} client:visible />
+                <DemoIsland id={t.demo} client:only="react" />
                 <div class="tcard-foot">
                   <a class="tcta" href={t.url}><span>Buka tool lengkap</span><IconArrow className="arrow" size={17} /></a>
                 </div>
