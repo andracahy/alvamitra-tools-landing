@@ -73,18 +73,9 @@ import { GROUPS } from '../data/content';
   } else {
     els.forEach(show);
   }
-  // Hentikan animasi SMIL di SVG hero untuk user yang minta reduced-motion
-  // (CSS tidak bisa mematikan animasi SMIL).
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.querySelectorAll('svg').forEach((s) => (s as SVGSVGElement).pauseAnimations?.());
-  }
-
   // Meta Pixel event tracking
-  const fbq = (...args: unknown[]) => {
-    if (typeof (window as { fbq?: (...a: unknown[]) => void }).fbq === 'function') {
-      (window as { fbq: (...a: unknown[]) => void }).fbq(...args);
-    }
-  };
+  const w = window as unknown as Record<string, (...a: unknown[]) => void>;
+  const fbq = (...args: unknown[]) => { if (typeof w.fbq === 'function') w.fbq(...args); };
 
   // ViewContent — saat section tools pertama kali terlihat
   const toolsSection = document.getElementById('tools');
